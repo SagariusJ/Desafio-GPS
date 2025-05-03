@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
+  estudiante:
+    build: ./estudiante
+    container_name: estudiante
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app_db
+    ports:
+      - "8001:8000"
+  
+  evaluacion:
+    build: ./evaluacion
+    container_name: evaluacion
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app_db
+    ports:
+      - "8002:8000"
+
+volumes:
+  postgres_data:
